@@ -8,6 +8,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import axios from '../../axios-orders';
+//import CustomerDetails from '../../components/Burger/CustomerDetails/CustomerDetails';
 
 
 const INGREDIENT_PRICES = {
@@ -19,17 +20,12 @@ const INGREDIENT_PRICES = {
 
 class BurgerBuilder extends Component {
     state = {
-        // ingredients: {
-        //     salad: 0, 
-        //     bacon: 0,
-        //     cheese: 0,
-        //     meat: 0
-        // },
         ingredients: null,
         totalPrice: 4,
         purchasable: false,
         purchasing: false,
-        loading: false
+        loading: false,
+        addingDetails: false,
     }
 
     componentDidMount () {
@@ -93,20 +89,38 @@ class BurgerBuilder extends Component {
         this.setState({purchasing: false});
     }
 
+    addingDetailsHandler = () => {
+        this.setState({addingDetails: true});
+    }
+
+    addingDetailsCancelHandler = () => {
+        this.setState({addingDetails: false});
+    }
+
     purchaseContinueHandler = () => {
         //alert('You continue!');
         this.setState( {loading: true} );
         const order = {
             ingredients: this.state.ingredients,
             price: this.state.totalPrice,
+            // customer: {
+            //     name: this.state.name,
+            //     address: {
+            //         street: this.state.street,
+            //         zipCode: this.state.zipCode,
+            //         country: this.state.country,
+            //         contactNumber: this.state.contactNumber
+            //     },
+            //     email: this.state.emailAddress
             customer: {
-                name: 'Nady',
+                name: '',
                 address: {
-                    street: 'tret',
-                    zipCode: 'trete',
-                    country: 'treter'
+                    street: '',
+                    zipCode: '',
+                    country: ''
                 },
-                email: 'test@test.com'
+                email: '',
+                contactNumber: ''
             },
             deliveryMethod: 'fastest'
         }
@@ -148,7 +162,9 @@ class BurgerBuilder extends Component {
                 ingredients={this.state.ingredients}
                 price={this.state.totalPrice}
                 purchaseCancelled={this.purchaseCancelHandler}
-                purchaseContinued={this.purchaseContinueHandler} />;
+                purchaseContinued={this.purchaseContinueHandler} 
+                //addingDetailsContinue={this.addingDetailsHandler}
+                />;
         }
         if ( this.state.loading ) {
             orderSummary = <Spinner />;
@@ -159,6 +175,12 @@ class BurgerBuilder extends Component {
                 <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
                     {orderSummary}
                 </Modal>
+                {/* <Modal show={this.state.addingDetails} modalClosed={this.addingDetailsCancelHandler}>
+                    <CustomerDetails
+                        name={this.state.name}
+                        purchaseCancelled={this.purchaseCancelHandler}
+                        purchaseContinued={this.purchaseContinueHandler} />
+                </Modal> */}
                 {burger}
             </Aux>
         );
